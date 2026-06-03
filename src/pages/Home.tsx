@@ -143,13 +143,13 @@ export const Home = () => {
           )}
         </AnimatePresence>
 
-        <div className="relative z-10 text-center px-4 mt-auto mb-24 md:mb-32">
+        <div className="relative z-10 text-center px-4 mt-32 md:mt-48">
           <motion.button 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             onClick={() => document.getElementById('hoodies')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-skullog-red text-white px-12 py-5 font-bold uppercase tracking-[0.2em] text-base hover:scale-105 transition-transform rounded shadow-2xl"
+            className="bg-skullog-red text-white px-12 py-5 font-bold uppercase tracking-[0.2em] text-base hover:scale-105 transition-transform rounded-full shadow-2xl"
           >
             Shop Now
           </motion.button>

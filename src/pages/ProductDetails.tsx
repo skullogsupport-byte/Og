@@ -87,13 +87,13 @@ export const ProductDetails = () => {
           </h1>
           
           <div className="text-2xl md:text-3xl font-bold flex items-center gap-3 mt-4 mb-6">
-            <span>${product.price}</span>
+            <span>Rs. {product.price.toFixed(2)}</span>
             {product.originalPrice && (
-              <span className="text-gray-400 line-through text-xl md:text-2xl">${product.originalPrice}</span>
+              <span className="text-gray-400 line-through text-xl md:text-2xl">Rs. {product.originalPrice.toFixed(2)}</span>
             )}
             {product.originalPrice && (
               <span className="bg-skullog-red text-white text-xs px-2 py-1 rounded-full uppercase tracking-widest self-center ml-2">
-                Save ${product.originalPrice - product.price}
+                Save Rs. {(product.originalPrice - product.price).toFixed(2)}
               </span>
             )}
           </div>
@@ -148,7 +148,7 @@ export const ProductDetails = () => {
           <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-3 mt-auto">
             <div className="flex text-sm">
               <span className="font-bold w-32">Shipping</span>
-              <span className="text-gray-500 text-right flex-1">Free standard on orders &gt; $150</span>
+              <span className="text-gray-500 text-right flex-1">Free standard on orders &gt; Rs. 5000</span>
             </div>
             <div className="flex text-sm">
               <span className="font-bold w-32">Returns</span>

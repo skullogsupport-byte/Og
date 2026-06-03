@@ -63,7 +63,7 @@ export const CartDrawer = () => {
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
-                        <span className="font-bold">${item.price * item.quantity}</span>
+                        <span className="font-bold">Rs. {(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -75,7 +75,7 @@ export const CartDrawer = () => {
               <div className="p-6 border-t border-gray-100 bg-gray-50">
                 <div className="flex items-center justify-between font-bold mb-4">
                   <span>Subtotal</span>
-                  <span>${cartTotal}</span>
+                  <span>Rs. {cartTotal.toFixed(2)}</span>
                 </div>
                 <button className="w-full bg-black text-white font-bold uppercase tracking-widest py-4 rounded-xl hover:bg-gray-900 transition-colors active:scale-[0.98]">
                   Checkout

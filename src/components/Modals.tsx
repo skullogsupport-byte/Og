@@ -139,7 +139,7 @@ export const SearchModal = () => {
                         </div>
                         <div>
                           <h4 className="font-bold">{product.name}</h4>
-                          <span className="text-gray-500">${product.price}</span>
+                          <span className="text-gray-500">Rs. {product.price.toFixed(2)}</span>
                         </div>
                       </div>
                     ))}
