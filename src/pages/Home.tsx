@@ -143,7 +143,7 @@ export const Home = () => {
           )}
         </AnimatePresence>
 
-        <div className="absolute bottom-8 md:bottom-16 z-10 text-center w-full px-4">
+        <div className="absolute top-[73%] left-1/2 -translate-x-1/2 z-10 text-center w-full px-4">
           <motion.button 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
