@@ -10,6 +10,7 @@ import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { Collections } from './pages/Collections';
 import { ProductDetails } from './pages/ProductDetails';
+import { Orders } from './pages/Orders';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: 'product/:id',
         element: <ProductDetails />,
+      },
+      {
+        path: 'orders',
+        element: <Orders />,
       },
     ],
   },

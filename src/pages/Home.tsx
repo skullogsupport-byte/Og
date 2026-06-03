@@ -149,9 +149,9 @@ export const Home = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             onClick={() => document.getElementById('hoodies')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-skullog-red text-white px-12 py-5 font-bold uppercase tracking-[0.2em] text-base hover:scale-105 transition-transform rounded-full shadow-2xl"
+            className="inline-flex items-center justify-center gap-3 bg-white text-skullog-red px-12 py-4 text-lg font-bold uppercase tracking-widest hover:scale-105 transition-transform rounded-full shadow-2xl"
           >
-            Shop Now
+            Shop Now <ArrowRight className="w-6 h-6" />
           </motion.button>
         </div>
       </section>

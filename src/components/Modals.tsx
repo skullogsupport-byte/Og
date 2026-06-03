@@ -1,13 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Search as SearchIcon } from 'lucide-react';
+import { X, Search as SearchIcon, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { PRODUCTS } from '../data/products';
+import { auth } from '../firebase';
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 
 export const AuthModal = () => {
   const { isAuthOpen, setIsAuthOpen } = useAppContext();
-  const [tab, setTab] = useState<'login' | 'register'>('login');
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      setIsAuthOpen(false);
+    } catch (error) {
+      console.error("Google sign in failed", error);
+      alert("Failed to log in with Google.");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setIsAuthOpen(false);
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -24,7 +53,7 @@ export const AuthModal = () => {
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="bg-white rounded-3xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden"
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-sm relative z-10 overflow-hidden text-center"
           >
             <button 
               onClick={() => setIsAuthOpen(false)} 
@@ -33,41 +62,55 @@ export const AuthModal = () => {
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex border-b border-gray-100">
-              <button 
-                onClick={() => setTab('login')}
-                className={`flex-1 py-4 font-bold font-heading uppercase tracking-wide text-center transition-colors ${tab === 'login' ? 'text-black border-b-2 border-black' : 'text-gray-400'}`}
-              >
-                Login
-              </button>
-              <button 
-                onClick={() => setTab('register')}
-                className={`flex-1 py-4 font-bold font-heading uppercase tracking-wide text-center transition-colors ${tab === 'register' ? 'text-black border-b-2 border-black' : 'text-gray-400'}`}
-              >
-                Register
-              </button>
-            </div>
-
-            <div className="p-8">
-              <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-                {tab === 'register' && (
-                  <div>
-                    <label className="sr-only">Name</label>
-                    <input type="text" placeholder="Full Name" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition-shadow" />
+            <div className="p-8 pb-10 mt-6">
+              <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-8 text-black">Account</h3>
+              
+              {user ? (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 border-2 border-gray-100 shadow-sm">
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center font-bold text-2xl text-gray-500">
+                        {(user.displayName || user.email || 'U')[0].toUpperCase()}
+                      </div>
+                    )}
                   </div>
-                )}
-                <div>
-                  <label className="sr-only">Email</label>
-                  <input type="email" placeholder="Email Address" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition-shadow" />
+                  <div className="text-center">
+                    <p className="font-bold text-lg leading-tight">{user.displayName || 'User'}</p>
+                    <p className="text-sm text-gray-500">{user.email}</p>
+                  </div>
+                  <div className="w-full flex gap-2 mt-4">
+                    <button 
+                      onClick={() => {
+                        setIsAuthOpen(false);
+                        navigate('/orders');
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 bg-black text-white font-bold uppercase tracking-widest py-3 rounded-xl hover:bg-gray-900 transition-colors"
+                    >
+                      {user.email === 'skullogsupport@gmail.com' ? 'All Orders' : 'My Orders'}
+                    </button>
+                    <button 
+                      onClick={handleLogout}
+                      className="flex-none p-3 bg-gray-100 text-black rounded-xl hover:bg-gray-200 transition-colors"
+                      title="Sign Out"
+                    >
+                      <LogOut className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label className="sr-only">Password</label>
-                  <input type="password" placeholder="Password" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black transition-shadow" />
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <p className="text-gray-500 mb-2 text-sm">Sign in to manage your orders</p>
+                  <button 
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center gap-3 bg-white border border-gray-200 text-black font-bold transition-all hover:bg-gray-50 py-4 rounded-xl shadow-sm hover:shadow active:scale-[0.98]"
+                  >
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
+                    Login with Google
+                  </button>
                 </div>
-                <button className="w-full bg-skullog-red text-white font-bold uppercase tracking-widest py-4 rounded-xl hover:bg-red-700 transition-colors mt-2 active:scale-[0.98]">
-                  {tab === 'login' ? 'Sign In' : 'Create Account'}
-                </button>
-              </form>
+              )}
             </div>
           </motion.div>
         </div>

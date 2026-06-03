@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "An ecommerce order from a user",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Razorpay order ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The user attempting checkout, if logged in"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Total amount in rs"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["created", "paid", "failed"],
+          "description": "Payment status"
+        },
+        "items": {
+          "type": "array"
+        },
+        "createdAt": {
+          "type": "timestamp"
+        }
+      },
+      "required": ["orderId", "amount", "status"]
+    }
+  },
+  "firestore": {
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "List of user orders"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Validate string ID
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+
+    // Orders Collection
+    match /orders/{orderDocId} {
+      allow read: if request.auth != null && (
+        request.auth.token.email == 'skullogsupport@gmail.com' ||
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if isValidId(orderDocId) &&
+        request.resource.data.keys().hasAll(['orderId', 'amount', 'status']) &&
+        request.resource.data.amount is number &&
+        request.resource.data.status in ['created', 'paid', 'failed'] &&
+        request.resource.data.orderId is string &&
+        request.resource.data.orderId.size() <= 128; // Allow anonymous checkouts to create order document records
+    }
+  }
+}
